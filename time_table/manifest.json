@@ -4,6 +4,7 @@
     "description": "Time table for work days",
     "manifest_version": 3,
     "author": "Satyam Seth",
+    "icons": { "48": "./img/clock.png"},
     "action":{
         "default_popup": "index.html",
         "default_title": "Time Table"
