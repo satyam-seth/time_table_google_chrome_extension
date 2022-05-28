@@ -1,0 +1,11 @@
+{
+    "name": "Time Table",
+    "version": "1.0.0",
+    "description": "Time table for work days",
+    "manifest_version": 3,
+    "author": "Satyam Seth",
+    "action":{
+        "default_popup": "index.html",
+        "default_title": "Time Table"
+    }
+}

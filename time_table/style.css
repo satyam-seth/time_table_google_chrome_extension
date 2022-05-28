@@ -1,0 +1,30 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  color: #fff;
+  background: linear-gradient(120deg, #212121, #000000);
+}
+
+table {
+  width: 500px;
+  text-align: center;
+}
+
+caption{
+  padding: 0.5rem;
+  font-weight: bold;
+  border: 1px solid;
+  font-size: 1.5rem;
+}
+
+th,
+td {
+  padding: 0.5rem;
+  font-size: 1rem;
+  border: 1px solid;
+  border-collapse: collapse;
+}
