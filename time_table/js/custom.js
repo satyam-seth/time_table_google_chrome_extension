@@ -1,110 +1,209 @@
 const data = {
     workdays: [
         {
-            time: '8:00 AM',
-            work: 'Social Media'
+            work: 'Social Media',
+            timeInfo: {
+                hours: 8,
+                minutes: 0,
+            },
         },
         {
-            time: '9:00 AM',
-            work: 'Bath + L + Cleaning + Break-Fast'
+            work: 'Bath + L + Cleaning + Break-Fast',
+            timeInfo: {
+                hours: 9,
+                minutes: 0,
+            },
         },
         {
-            time: '9:30 AM',
-            work: 'Office'
+            work: 'Office',
+            timeInfo: {
+                hours: 9,
+                minutes: 30,
+            },
         },
         {
-            time: '1:30 PM',
-            work: 'Lunch (Social Media)'
+            work: 'Lunch (Social Media)',
+            timeInfo: {
+                hours: 13,
+                minutes: 30,
+            },
         },
         {
-            time: '7:00 PM',
-            work: 'Youtube and Social Media'
+            work: 'Youtube and Social Media',
+            timeInfo: {
+                hours: 19,
+                minutes: 00,
+            },
         },
         {
-            time: '8:00 PM',
-            work: 'Research'
+            work: 'Research',
+            timeInfo: {
+                hours: 20,
+                minutes: 00
+            },
         },
         {
-            time: '9:00 PM',
-            work: 'Cooking + Dinner'
+            work: 'Cooking + Dinner',
+            timeInfo: {
+                hours: 21,
+                minutes: 00
+            },
         },
         {
-            time: '10:00 PM',
-            work: 'Learning'
+            work: 'Learning',
+            timeInfo: {
+                hours: 22,
+                minutes: 00
+            },
         },
         {
-            time: '11:00 PM',
-            work: 'DS Algo / Project'
+            work: 'DS Algo / Project',
+            timeInfo: {
+                hours: 23,
+                minutes: 00
+            },
         },
         {
-            time: '12:00 PM',
-            work: 'Social Media'
+            work: 'Social Media',
+            timeInfo: {
+                hours: 00,
+                minutes: 00
+            },
         },
     ],
     weekends: [
         {
-            time: '8:00 AM',
-            work: 'Social Media'
+            work: 'Social Media',
+            timeInfo: {
+                hours: 8,
+                minutes: 0,
+            },
         },
         {
-            time: '9:00 AM',
-            work: 'Bath + L + Cleaning + Break-Fast'
+            work: 'Bath + L + Cleaning + Break-Fast',
+            timeInfo: {
+                hours: 9,
+                minutes: 0,
+            },
         },
         {
-            time: '10:00 AM',
-            work: 'Learning / Research'
-
+            work: 'Learning / Research',
+            timeInfo: {
+                hours: 10,
+                minutes: 00,
+            },
         },
         {
-            time: '1:30 PM',
-            work: 'Lunch + (Social Media / Entertainment / Youtube)'
+            work: 'Lunch + (Social Media / Entertainment / Youtube)',
+            timeInfo: {
+                hours: 13,
+                minutes: 30,
+            },
         },
         {
-            time: '2:00 PM',
-            work: 'Project / DS Algo'
+            work: 'Project / DS Algo',
+            timeInfo: {
+                hours: 14,
+                minutes: 00,
+            },
         },
         {
-            time: '8:00 PM',
-            work: 'Youtube and Social Media'
+            work: 'Youtube and Social Media',
+            timeInfo: {
+                hours: 20,
+                minutes: 00,
+            },
         },
         {
-            time: '9:00 PM',
-            work: 'Cooking + Dinner'
+            work: 'Cooking + Dinner',
+            timeInfo: {
+                hours: 21,
+                minutes: 00,
+            },
         },
         {
-            time: '10:00 PM',
-            work: 'Movie / Web Series'
+            work: 'Movie / Web Series',
+            timeInfo: {
+                hours: 22,
+                minutes: 00,
+            },
         },
         {
-            time: '12:00 PM',
-            work: 'Social Media / Backup / Other Imp docs'
+            work: 'Social Media / Backup / Other Imp docs',
+            timeInfo: {
+                hours: 00,
+                minutes: 00,
+            },
         }
     ]
 }
 
-function buildTable(table, data){
-    data.forEach(item => {
-        const row = document.createElement('tr');
-        const time = document.createElement('td');
-        const work = document.createElement('td');
-
-        time.innerText = item.time;
-        work.innerText = item.work;
-
-        row.append(time, work);
-        table.appendChild(row);
-    })
+// display date in human readable form
+function dateDisplayFormat(date) {
+    return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 }
 
+// highlight current work
+// function highlight(data, workspace) {
+//     const demo = new Date();
+//     demo.setHours(18);
+//     demo.setMinutes(14);
+//     // console.log(dateDisplayFormat(demo));
+// }
+
 // const currentTime = new Date();
-// const currentLocalTime = currentTime.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
+
+// get time for a work
+function getTime(timeInfo) {
+    const date = new Date();
+    date.setHours(timeInfo.hours);
+    date.setMinutes(timeInfo.minutes);
+    return date;
+}
+
+// build table from data
+function buildTable(table, data, namespace) {
+    const currentTime = new Date();
+    let flag = true;
+    let currentWork = null;
+
+    data.forEach((item, i) => {
+        const row = document.createElement('tr');
+        const timeColumn = document.createElement('td');
+        const workColumn = document.createElement('td');
+
+        const time = getTime(item.timeInfo);
+
+
+        console.log(time)
+        if (flag) {
+            if (time <= currentTime) {
+                currentWork = row;
+            } else {
+                flag = false;
+            }
+        }
+
+        timeColumn.innerText = dateDisplayFormat(time);
+        workColumn.innerText = item.work;
+
+        row.id = `${namespace}-${i}`
+        row.append(timeColumn, workColumn);
+        table.appendChild(row);
+    })
+
+    currentWork.classList.add('highlight');
+}
+
 
 window.onload = () => {
     const workdaysTable = document.querySelector('table#workdays');
     const weekendsTable = document.querySelector('table#weekends');
 
-    buildTable(workdaysTable, data.workdays);
-    buildTable(weekendsTable, data.weekends);
+    buildTable(workdaysTable, data.workdays, 'workdays');
+    buildTable(weekendsTable, data.weekends, 'weekends');
+
+    // highlight();
 }
 
-// use setInterval
+// use setInterval  
