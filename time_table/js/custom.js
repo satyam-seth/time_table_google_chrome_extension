@@ -143,16 +143,6 @@ function dateDisplayFormat(date) {
     return date.toLocaleString('en-US', { hour: 'numeric', minute: 'numeric', hour12: true });
 }
 
-// highlight current work
-// function highlight(data, workspace) {
-//     const demo = new Date();
-//     demo.setHours(18);
-//     demo.setMinutes(14);
-//     // console.log(dateDisplayFormat(demo));
-// }
-
-// const currentTime = new Date();
-
 // get time for a work
 function getTime(timeInfo) {
     const date = new Date();
@@ -161,8 +151,32 @@ function getTime(timeInfo) {
     return date;
 }
 
+function getTableCaption() {
+    const caption = document.createElement('caption');
+    caption.innerText = 'Time Table'
+    return caption;
+}
+
+function getTableHeaderRow() {
+    const tr = document.createElement('tr');
+
+    const th1 = document.createElement('th');
+    th1.innerText = 'Time';
+
+    const th2 = document.createElement('th');
+    th2.innerText = 'Work';
+
+    tr.appendChild(th1);
+    tr.appendChild(th2);
+
+    return tr;
+}
+
 // build table from data
 function buildTable(table, data, namespace) {
+    table.append(getTableCaption());
+    table.append(getTableHeaderRow());
+
     const currentTime = new Date();
     let flag = true;
     let currentWork = null;
@@ -174,11 +188,9 @@ function buildTable(table, data, namespace) {
 
         const time = getTime(item.timeInfo);
 
-
-        console.log(time)
         if (flag) {
             if (time <= currentTime) {
-                currentWork = row;
+                currentWork = row; // Store the current work row
             } else {
                 flag = false;
             }
@@ -187,23 +199,38 @@ function buildTable(table, data, namespace) {
         timeColumn.innerText = dateDisplayFormat(time);
         workColumn.innerText = item.work;
 
-        row.id = `${namespace}-${i}`
+        row.id = `${namespace}-${i}`;
         row.append(timeColumn, workColumn);
         table.appendChild(row);
-    })
+    });
 
-    currentWork.classList.add('highlight');
+    // Highlight the current work
+    if (currentWork) {
+        currentWork.classList.add('highlight');
+    }
 }
 
+// Update function to handle dynamic highlighting using setInterval
+function highlightCurrentWork() {
+    const currentTime = new Date();
 
-window.onload = () => {
+    // Rebuild the tables every 30 seconds (or your preferred interval)
     const workdaysTable = document.querySelector('table#workdays');
     const weekendsTable = document.querySelector('table#weekends');
 
+    // Clear tables before rebuilding
+    workdaysTable.innerHTML = '';
+    weekendsTable.innerHTML = '';
+
+    // Rebuild tables
     buildTable(workdaysTable, data.workdays, 'workdays');
     buildTable(weekendsTable, data.weekends, 'weekends');
-
-    // highlight();
 }
 
-// use setInterval  
+// Initialize and set interval for live updates every minute (60000ms)
+window.onload = () => {
+    highlightCurrentWork(); // Initial table population
+
+    // Update the tables every minute
+    setInterval(highlightCurrentWork, 60000);
+};
